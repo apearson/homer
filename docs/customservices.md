@@ -14,6 +14,7 @@ Available services are located in `src/components/`:
 
 - [Common options](#common-options)
 - [AdGuard Home](#adguard-home)
+- [Authelia](#authelia)
 - [Beszel](#beszel)
 - [CopyToClipboard](#copy-to-clipboard)
 - [Docuseal](#docuseal)
@@ -121,6 +122,21 @@ Displays AdGuard Home protection status and blocked query statistics.
 > headers:  
 >   Authorization: "Basic <base64-encoded for username:password>"
 > ```
+
+## Authelia
+
+Displays who is signed in to [Authelia](https://www.authelia.com/): the account's display name and `signed in`, `signed out` without a valid session, or `offline` when Authelia can't be reached.
+
+```yaml
+- name: "Authelia"
+  type: "Authelia"
+  logo: "assets/tools/sample.png"
+  url: https://auth.my-service.url/settings # Optional: the page the card links to
+  endpoint: https://auth.my-service.url # Your Authelia URL, which the card queries
+  useCredentials: true # Required on a subdomain, see below
+```
+
+The card checks the Authelia session of the browser viewing Homer, so Authelia has to be under the same domain as Homer: on a subpath (`endpoint: /authelia`), or on a subdomain such as `auth.` next to `homer.`. On a subdomain, set `useCredentials: true`, otherwise the session cookie isn't sent and the card always shows `signed out`. Authelia doesn't send CORS headers itself, so the reverse proxy in front of it has to add `Access-Control-Allow-Origin` with Homer's exact origin (not `*`) and `Access-Control-Allow-Credentials: true`, on error responses as well.
 
 ## Beszel
 
