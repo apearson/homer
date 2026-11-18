@@ -121,6 +121,23 @@ If you would like to change internal port of Homer from default `8080` to your p
 - **`IPV6_DISABLE`** (default: 0)
 Set to `1` to disable listening on IPv6.
 
+- **`BIND_ADDRESS`** (default: empty)
+Address lighttpd listens on. Leave it empty to listen on all IPv4 addresses, and on IPv6 too unless `IPV6_DISABLE` is `1`. Set an IPv4 address, a hostname, or an IPv6 address to listen only on that address (on `PORT`). IPv6 literals can be written as `::1` or `[::1]`. A hostname is passed through as-is and lighttpd binds a single resolved address, so loopback is more predictable as `127.0.0.1` or `::1`. The container healthcheck uses this address, and uses `127.0.0.1` when it is empty.
+
+With host networking, a reverse proxy on the same machine can be the only client:
+
+```yaml
+services:
+  homer:
+    image: b4bz/homer
+    network_mode: host
+    environment:
+      - BIND_ADDRESS=127.0.0.1
+      - PORT=8080
+```
+
+The access log skips requests from `127.0.0.1` and `[::1]` so healthchecks stay quiet. A reverse proxy on loopback is skipped the same way.
+
 ### Using the release tarball (prebuilt, ready to use)
 
 Download and extract the latest release (`homer.zip`) from the [release page](https://github.com/homer-dashboard/homer/releases), rename the `assets/config.yml.dist` file to `assets/config.yml`, and put it behind a web server.
