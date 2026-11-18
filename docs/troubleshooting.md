@@ -22,7 +22,7 @@ You can either:
 > - **Do not** use env var to set the GID / UID of the user running container. Use the Docker `user` option.
 > - **Do not** use 0:0 as a user value, it would be a security risk, and it's not guaranty to work.
 
-Check this [thread](https://github.com/bastienwirtz/homer/issues/459) for more information about debugging
+Check this [thread](https://github.com/homer-dashboard/homer/issues/459) for more information about debugging
 permission issues.
 
 ## My service card doesn't work, nothing appears or offline status is displayed (pi-hole, sonarr, ping, ...)
@@ -41,7 +41,7 @@ To resolve this, you can either:
 
 - Host all your target service under the same domain & port.
 - Modify the target server configuration so that the response of the server included following header- `Access-Control-Allow-Origin: *` (<https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests>). It might be an option in the targeted service, otherwise depending on how the service is hosted, the proxy or web server can seamlessly add it.
-- **Use a proxy** to add the necessary CORS headers (lot of options, some of them described [here](https://enable-cors.org/server.html). Also check [`CORSair`](https://github.com/bastienwirtz/corsair), a light and simple solution)
+- **Use a proxy** to add the necessary CORS headers (lot of options, some of them described [here](https://enable-cors.org/server.html). Also check [`CORSair`](https://github.com/homer-dashboard/corsair), a light and simple solution)
 
 ## I am using an authentication proxy and homer says I am offline
 
@@ -84,3 +84,20 @@ Only one icon is lost: **`fa-vector-square` no longer exists**. Font Awesome ren
 
 > [!NOTE]
 > Font Awesome 7 also gives every icon the same width by default. Homer keeps the previous behaviour, so nothing moves after upgrading. See [icon width](configuration.md#icon-width) if you want the new look.
+
+## My custom stylesheet stopped styling the service cards since 26.11.1
+
+Every card moved onto a shared layout, so a few selectors no longer match:
+
+- `.media`, `.media-left`, `.media-content` and `.media.no-subtitle` are gone. The icon is now `.card-icon`, and the title and subtitle sit in `.card-body`.
+- Paths through the card gained a level: `.card-wrapper` sits between the item and `.card`, and the card link is `.card > .card-content > a.card-link`.
+- `.tag` collapses with `max-width` rather than `width`, so a rule setting `width` has no effect.
+- `.quicklinks` is a flex lane at the bottom of the card, so `float` no longer applies.
+- `.card-lane` reaches both card edges and clips what overflows them, so anything positioned inside it stops at the card. The tag sits at the lane's inline end rather than overhanging by its own offset.
+- The status dot animation is named `status-pulse`.
+
+`.card:hover` still matches, so hover rules keyed on the card itself keep working.
+
+## I cannot select card text, and some tooltips stopped appearing
+
+The whole card is one link, drawn as a transparent overlay on top of the content. That overlay takes the pointer, so text inside a card can no longer be selected, and a native `title` tooltip on an element in the card body no longer opens. Tooltips on the badges and the tag are unaffected, as those sit above the overlay.
