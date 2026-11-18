@@ -56,7 +56,7 @@ Your browser is serving a cached copy of `config.yml`. A quick way to confirm it
 
 Force a reload with `Ctrl + Shift + R` (`Cmd + Shift + R` on macOS) to pick the changes up immediately.
 
-In the Docker image, Hommer's webserver tells browsers to revalidate the configuration on every load, revalidation is cheap as unchanged files are answered with a `304` and no body.
+In the Docker image, Homer's webserver tells browsers to revalidate the configuration on every load. Revalidation is cheap: unchanged files get a `304` and no body.
 
 > [!NOTE]
 > The `Last-Modified` date returned by `curl -I <your-homer-url>` is not a symptom. That request returns `index.html`, whose timestamp is set when the container image was built, so it is unrelated to when you last edited your configuration.
