@@ -916,7 +916,7 @@ Displays the number of currently queued items for transcoding on your Tdarr inst
 Displays the Traefik version and online status, with badges counting routers, services, middlewares and certificates, plus any warnings and errors. Routers, services and middlewares are summed across `http`, `tcp` and `udp`; warnings and errors across those and the certificates. Certificates are only reported by Traefik 3.7 and later.
 
 > [!IMPORTANT]
-> **Potentially breaking change**: on version `26.08.3` and earlier, this card only displayed the Traefik version.
+> **Potentially breaking change**: on version `26.11.3` and earlier, this card only displayed the Traefik version.
 > It now also shows badges for routers, services, middlewares, certificates, warnings and errors.
 >
 > To keep the old version-only card, hide every badge, which also skips the `/api/overview` request:
