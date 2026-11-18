@@ -35,7 +35,8 @@ ENV GID=1000 \
     PORT=8080 \
     SUBFOLDER="/_" \
     INIT_ASSETS=1 \
-    IPV6_DISABLE=0
+    IPV6_DISABLE=0 \
+    BIND_ADDRESS=""
 
 RUN addgroup -S lighttpd -g ${GID} && adduser -D -S -u ${UID} lighttpd lighttpd && \
     apk add -U --no-cache tzdata lighttpd
@@ -44,6 +45,7 @@ WORKDIR /www
 
 COPY lighttpd.conf /lighttpd.conf
 COPY lighttpd-ipv6.sh /etc/lighttpd/ipv6.sh
+COPY lighttpd-healthcheck.sh /lighttpd-healthcheck.sh
 COPY entrypoint.sh /entrypoint.sh
 COPY --from=build-stage --chown=${UID}:${GID} /app/dist /www/
 COPY --from=build-stage --chown=${UID}:${GID} /app/dist/assets /www/default-assets
@@ -51,7 +53,7 @@ COPY --from=build-stage --chown=${UID}:${GID} /app/dist/assets /www/default-asse
 USER ${UID}:${GID}
 
 HEALTHCHECK --start-period=10s --start-interval=1s --interval=30s --timeout=5s --retries=3 \
-    CMD wget --no-verbose -Y off --tries=1 --spider http://127.0.0.1:${PORT}/ || exit 1
+    CMD ["/bin/sh", "/lighttpd-healthcheck.sh"]
 
 EXPOSE ${PORT}
 
